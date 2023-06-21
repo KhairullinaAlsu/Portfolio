@@ -38,5 +38,41 @@
                 <a href="mailto:a.khairullina@innopolis.university" id="email"><img src="images/outlook.png" alt="outlook" class="soc"></a>
             </p>
         </div>
+    </div>
+    <div class="comic__container">
+        <img class="comic__image" alt="XKCD Comic Image">
+        <h2 class="comic__title"></h2>
+        <p class="publish__date"></p>
+    </div>
+    <script>
+    const email = 'a.khairullina@innopolis.university';
+    const apiUrl = 'https://fwd.innopolis.university/api';
+    const fetchComicIdentifier = async () => {
+        const params = new URLSearchParams({ email });
+        const response = await fetch(`${apiUrl}/hw2?${params}`);
+        const data = await response.json();
+        return data.comic_id;
+    };
+    const fetchComicData = async (comicId) => {
+        const response = await fetch(`${apiUrl}/comic?id=${comicId}`);
+        const data = await response.json();
+        return data;
+    };
+    const displayComic = (comic) => {
+        const { img, title, alt, year, month, day } = comic;
+        const uploadDate = new Date(year, month - 1, day);
+        const comicImage = document.querySelector('.comic__image');
+        comicImage.src = img;
+        comicImage.alt = alt;
+        const comicTitle = document.querySelector('.comic__title');
+        comicTitle.textContent = title;
+        const publishDate = document.querySelector('.publish__date');
+        publishDate.textContent = `Published on ${uploadDate.toLocaleDateString()}`;
+    };
+    fetchComicIdentifier()
+        .then(fetchComicData)
+        .then(displayComic)
+        .catch((error) => console.error(error));
+    </script>
 </body>
 </html>
